@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
+
+*{
+  font-family: "Single Day", cursive;
+}
+
+body {
+  padding: 50px;
+  font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: "Single Day", cursive;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.page{
+  width: 960px;
+  margin:0px auto;
+  background-color: rgb(218, 243, 255);
+  color: rgb(167, 167, 167);
+}
+.div_bottom{
+  text-align: center;
+  background-color: rgb(217, 217, 217);
+  color: aliceblue;
+  font-size: large;
+  
+
+}
+.div_menu .item{
+  margin: 0px 20px;
+}
+.div_menu{
+  margin: 20px 0px;
+}
+
+.div_home{
+  
+  color: black;
+  margin: 70px 0px;
+}
+
+h1{
+  text-align: center;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.title,.price{
+  font-size: 12px;
+  color: rgb(46, 157, 74);
+}
