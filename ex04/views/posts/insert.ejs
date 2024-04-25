@@ -1,0 +1,32 @@
+<h1><%=title%></h1>
+<form class="px-5" name="frm" method="post" action="/posts/insert">
+    <!--액션은 겟으로보낼때 주소가같아서 생략했던것임,,-->
+    <!-- method="post" action="/posts/여기로" 이러면 보냇을때 (여기로)로 이동하는것임,,-->
+    <input name="uid" type="hidden">
+    <input name="title" placeholder="제목을 입력하세요" class="form-control mb-3">
+    <textarea name="contents" rows="10" class="form-control" placeholder="내용을 입력하세요"></textarea>
+    <div class="text-center mt-3">
+        <button type="submit" class="btn btn-success px-5">등록</button>
+        <!--기본값도 submit-->
+        <button type="reset" class="btn btn-secondary">취소</button>
+    </div>
+</form>
+
+<script>
+    $(frm.uid).val(uid);
+    $(frm).on("submit",function(e){
+        e.preventDefault();
+        const title=$(frm.title).val();
+        //컨텐츠는 안써도된다고르ㅐㅅ지만 일단해봄,,frm.title이건 frm안에title이란뜻
+        const contents=$(frm.contents).val();
+
+        if(title==""){
+            alert("제목을 입력하삼!");
+        }else if(contents==""){
+            alert("내용을 입력하삼!");
+        }else{
+            alert(`${uid}\n${title}\n${contents}`);
+            frm.submit();
+        }
+    });
+</script>
