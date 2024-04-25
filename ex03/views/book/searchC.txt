@@ -1,0 +1,129 @@
+<h1><%=title%></h1>
+<!--실질적으로나오게함-->
+<div class="row mb-2">
+    <div class="col-6 col-md-4">
+        <form class="input-group" name="frm">
+            <input class="form-control" name="query" value="자바" placeholder="검색어">
+            <button class="btn btn-success">검색</button>
+        </form>
+    </div>
+</div>
+<div id="book"></div>
+<div id="div_book" class="row"></div>
+<div style="text-align: center;">
+    <button id="prev" class="btn btn-primary">이전</button>
+    <span id="page"></span>
+    <button id="next" class="btn btn-success">다음</button>
+</div>
+<!--도서템플릿-->
+<script id="temp_book" type="x-handlebars-template">
+    <table>
+        {{#each documents}}
+            <tr class="col-lg-2 col-md-4 col-6 mb-2 ">
+                <td class="card">
+                    <div class="card-body">
+                        <img src={{thumbnail}} width="90%">
+                     </div>
+                </td>
+                <td>        
+                    <div class="card-footer">
+                        <div class="ellipsis title">
+                            {{title}}  
+                        </div>
+                    </div>
+                 </td>    
+            </tr>
+        {{/each}}
+    </table>
+</script>
+<!--도서찾는시스템 함수로만들고 호출하기-->
+<script>
+   let query =$(frm.query).val();
+   getData();
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        query =$(frm.query).val();
+        if(query==""){
+            alert("검색어를 입력하세요")
+        }else{
+            getData();
+        }
+    }); 
+    //
+    let page=1;
+
+   $("#next").on("click",function(){
+        page++;
+        getData();  
+    });
+    $("#prev").on("click",function(){
+        page--;
+        getData();
+    });
+    
+    function getData(){
+        $.ajax({
+            type:"get",
+            url:"https://dapi.kakao.com/v3/search/book",
+            dataType:"json",
+            data:{query:query, size:6, page:1},
+            headers:{"authorization":"KakaoAK f3d977d0f78639ca211ff67b0676d64c"},
+            success: function(data){
+                //alert("성공!");
+                console.log(data);
+                const temp=Handlebars.compile($("#temp_book").html());
+                $("#div_book").html(temp(data));
+                 const total=data.length;
+                const last=Math.ceil(total/10);
+                
+               $("#page").html(`<b>${page}</b>`);
+                let start=(page-1)*10+1;
+                let end=page*10;
+                let str=""; //데이터초기화
+                if(id>=start && id<=end){
+                    str +=`<tr class="col-lg-2 col-md-4 col-6 mb-2">`;
+                    str +=`<td class="card">;
+                    str +=`<div class="card-body">`;
+                    str +=`{{thumbnail}}`;
+                    str +=`</div>`;
+                    str +=`</td>`;
+                    str +=`<td>        `;
+                    str +=` <div class="card-footer">`;
+                    str +=`  <div class="ellipsis title">`;
+                    str +=`    {{title}}  `;
+                    str +=`  </div>`;
+                    str +=`  </div>`;
+                    str +=` </td> `;
+                                    
+                
+            }
+
+           
+             
+
+           
+            
+            
+             
+        }); 
+    }
+
+    //
+    /*
+    function getData(){
+        $.ajax({
+            type:"get",
+            url:"https://dapi.kakao.com/v3/search/book",
+            dataType:"json",
+            data:{query:query, size:6, page:1},
+            headers:{"authorization":"KakaoAK f3d977d0f78639ca211ff67b0676d64c"},
+            success: function(data){
+                //alert("성공!");
+                console.log(data);
+                const temp=Handlebars.compile($("#temp_book").html());
+                $("#div_book").html(temp(data));
+            }
+        });
+    }
+    */
+</script>

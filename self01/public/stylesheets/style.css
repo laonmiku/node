@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
+*{
+    font-family:"Single Day"; 
+}
+.menuM{
+  font-size: 35px;
+}
+h1{
+  background-color: rgb(186, 236, 255);
+  text-align: center;
+
+
+}
+#home_h5{
+text-align: center;
+background-color: bisque;
+}
+#home_h6{
+  text-align: right;
+  color: gray;
+}
