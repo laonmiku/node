@@ -1,0 +1,108 @@
+<h1><%=title%></h1>
+<div class="row">
+    <div class="col-6 col-md-4"> <!--md=중간이상해상도일때 4차지-->
+        <form name="frm">
+            <div class="input-group">
+                <input class="form-control" name="query" placeholder="검색어">
+                <button class="btn btn-primary" >검색</button>
+            </div>
+        </form>
+    </div>
+    <div class="col pt-2">
+        <span id="total"></span>
+    </div>
+    <div class=" col text-end" id="div_write" style="display : none;">
+        <a href="/posts/insert"> <!--경로잘못되면 404에러-->
+            <button class="btn btn-success mb-3" >글쓰기</button>
+        </a>
+    </div>
+</div>
+<!--내용테이블-->
+<div id="div_posts"></div>
+<div class="text-center">
+    <button id="prev" class="btn btn-sm btn-success">이전</button>
+    <span id="page" class="mx-3">1</span>
+    <button id="next" class="btn btn-sm btn-success">다음</button>
+</div>
+<script id="temp_posts" type="X-handlebars-template">
+    <table class="table table-striped table-hover">
+        <tr>
+            <td>ID</td>
+            <td>Title</td>
+            <td>Writer</td>
+            <td>Date</td>
+        </tr>
+        {{#each documents}}
+            <tr>
+                <td>{{pid}}</td>
+                <td><a href="/posts/read?pid={{pid}}">{{title}}</a></td>
+                <td>{{writer}}</td>
+                <td>{{fdate}}</td>
+            </tr>
+        {{/each}}
+    </table>
+</script>
+
+<script>
+    let page=1;
+    const size=5;
+    let query="";
+
+    //검색버튼누를때 썸밋 안하게
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        query=$(frm.query).val();
+        page=1;
+        getData();
+    });
+    
+    //이전버튼클릭
+    $("#prev").on("click", function(){
+        page--;
+        getData();
+    });
+
+    //다음버튼을 클릭한경우
+    $("#next").on("click", function(){
+        page++;
+        getData();
+    });
+
+    
+    //데이터부르기
+    getData();
+
+    //글쓰기버튼 로그인해야 보이게하기
+    if(uid){
+        $("#div_write").show();
+    }else{
+        $("#div_write").hide();
+    }
+
+    function getData(){
+        $.ajax({
+            type:"get",
+            url:"/posts/list.json",
+            datatype:"json",//내서버에서 가져오는거라 api키 안주는거임,,카카오가아니라서,,
+            data:{page:page,size,query},//같은값이라 그냥 페이지 한번만적어도됨,,
+            success:function(data){
+                console.log(data);
+                const temp=Handlebars.compile($("#temp_posts").html());
+                const last = Math.ceil(data.total/size);
+                $("#div_posts").html(temp(data));
+                $("#page").html(`<b>${page}/${last}`);
+                $("#total").html(`총 검색수 : <b>${data.total}</b>개`);
+                if(page==1){
+                    $("#prev").attr("disabled", true);
+                }else{
+                    $("#prev").attr("disabled", false);
+                }
+                if(page==last){
+                    $("#next").attr("disabled", true);
+                }else{
+                    $("#next").attr("disabled", false);
+                }
+            }
+        });
+    }
+</script>

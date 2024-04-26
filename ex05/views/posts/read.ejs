@@ -1,0 +1,47 @@
+<h1><%=title%></h1>
+
+<div class="text-end mb-2" id="buttons">
+    <a href="/posts/update?pid=<%=poster.pid%>" class="btn btn-primary btn-sm update">
+        수정
+    </a>
+    <button class="btn btn-danger btn-sm delete">삭제</button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div>
+            <b>[<%=poster.pid%>]</b><%=poster.title%>
+        </div>
+        <hr>
+        <div>
+            <%=poster.contents%>
+        </div>
+    </div>
+    <div class="card-footer" style="font-size: 12px; color: rgb(139, 139, 139);">
+        <div>
+            <span>작성자 : <%=poster.writer%></span>
+            <span class="ms-3">작성일 : <%=poster.fdate%></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const writer="<%=poster.writer%>";
+    if(uid==writer){
+        $("#buttons").show();
+    }else{
+        $("#buttons").hide();
+    }
+
+    //삭제버튼을 클릭한경우     //.delete -> class="delete"
+    $("#buttons").on("click",".delete", function(){
+        const pid="<%=poster.pid%>";
+        if(confirm(`${pid}번 게시글을 삭제하실래요`)){
+            //삭제작업
+            //에이작으로해도되지만 로케이션도잇음 링크로넘어가란말
+            location.href="/posts/delete?pid="+ pid;
+        }          
+    });
+
+
+</script>

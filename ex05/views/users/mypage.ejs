@@ -1,0 +1,63 @@
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!--주소검색하는-->
+
+<style>
+    span{
+        width: 100px;
+    }
+</style>
+
+<h1><%=title%></h1>
+
+<div class="row px-5 justify-content-center">
+    <div class="col-10 col-md-6 card">
+        <form class="card-body" name="frm" method="post" action="/users/update">
+            <input name="uid"  value="<%=user.uid%>" type="hidden" >
+            <div class="input-group mb-2">
+                <span class="input-group-text">이름</span>
+                <input class="form-control" value="<%=user.uname%>" name="uname">
+            </div>
+            <div class="input-group mb-2">
+                <span class="input-group-text">전화</span>
+                <input class="form-control" value="<%=user.phone%>" name="phone">
+            </div>
+            <div class="input-group mb-1">
+                <span class="input-group-text">주소</span>
+                <input class="form-control" name="address1" value="<%=user.address1%>" >
+                <button id="btn_search" type="button" class="btn btn-secondary px-5" >검색</button>
+            </div>          <!--버튼타입 주의하기-->
+            <div>
+                <input class="form-control" placeholder="상세주소" value="<%=user.address2%>" name="address2">
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-warning">수정</button>
+                <button type="reset" class="btn btn-secondary" style="color: black;">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(frm).on("submit",function(e){
+        e.preventDefault();
+        if(confirm("정말로 수정하시랠요")){
+            frm.submit();
+        };
+    });
+
+    $("#btn_search").on("click",function(){
+        new daum.Postcode({
+            oncomplete:function(data){
+                console.log(data);
+                const building=data.buildingName;
+                let address="";
+                if(building!=""){
+                    address=`${data.address}(${building})`
+                }else{
+                    address=data.address
+                }
+                $(frm.address1).val(address);
+            }
+        }).open();
+    });
+</script>

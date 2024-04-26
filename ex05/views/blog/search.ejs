@@ -1,0 +1,118 @@
+<h1><%=title%></h1>
+<div class="row mb-2">
+    <form class="col-8 col-md-4" name="frm">
+        <div class="input-group">
+            <input name="query" class="form-control" placeholder="키워드" value="서울">
+            <button class="btn btn-success">검색</button>
+        </div>
+    </form>
+</div>
+<div id="div_local"></div>
+
+<div id="div_blog" style="width :900px; margin: 0px auto;"></div>
+<div class="text-center my-3">
+    <button class="btn btn-success" id="prev">이전</button>
+    <span class="mx-3" id="page">1</span>
+    <button class="btn btn-success" id="next">다음</button>
+</div>
+<script id="temp_blog" type="X-handlebars-template">
+  
+    {{#each documents}}
+        <div class="row mb-3" url="{{url}}" style="cursor:pointer">
+            <div class="col">
+                <div><a href="{{url}}">{{{title}}}</a></div>
+                <div class="ellipsis3">{{{contents}}}</div>
+                <div class="mt-2" style="font-size:10px;color:gray;">
+                <span>{{blogname}}</span>
+                <span class="ms-3">{{fmtDate datetime}}</span>
+                </div>
+            </div>
+            
+            <div class="col">
+                <img src="{{thumbnail}}" alt="썸네일">
+            </div>
+        </div>    
+    {{/each}}
+</script>
+
+
+<script>
+//스트링타임을 읾부만가져오는 함수를,, 저안에서쓰려고 변한해주는함수
+    // Handlebars.registerHelper("fmtDate", function(datetime){
+    //     return datetime.substr(0,10); //0번부터9번째까지,,,
+    // })
+    Handlebars.registerHelper("fmtDate", function(date){
+        const yymm=date.substr(0,8); // 2024-04 에서 0번째부터 7번쨰까지 ->2024-04<-나옴
+        const yy=date.substr(0,4); //시작인덱스,가져올수
+        const mm=date.substr(5,2);
+        const dd=date.substr(8,2);
+        const fmtdate=`${yy}년${mm}월${dd}일`;
+        return fmtdate;
+    })
+</script>
+
+
+<script>
+    const size=3;
+    let page=1;
+    let query=$(frm.query).val();
+    getData();
+    
+    //이전버튼을 클릭한경우
+        $("#prev").on("click", function(){
+        page--;
+        getData();
+    });
+
+    //다음버튼을 클릭한경우
+    $("#next").on("click", function(){
+        page++;
+        getData();
+    });
+    //로우를 클릭햇을때
+    $("#div_blog").on("click",".row",function(){
+        const url=$(this).attr("url");
+        location.href=url;
+    });
+
+    //검색어가없을떄
+    $(frm).on("submit", function(event){
+        event.preventDefault();
+        query=$(frm.query).val();
+        if(query==""){
+            alert("검색어를 입력하세요!");
+        }else{
+            page=1;
+            getData();
+        }
+    });
+
+    function getData(){
+        $.ajax({
+            type :"get",
+            url :"https://dapi.kakao.com/v2/search/blog",
+            headers : {"authorization":"KakaoAK f3d977d0f78639ca211ff67b0676d64c"},
+            dataType : "json",
+            data :{query:query,size :size,page:page},
+            success: function(data){
+                console.log(data);
+                const temp=Handlebars.compile($("#temp_blog").html());
+                $("#div_blog").html(temp(data));
+            
+                const last=Math.ceil(data.meta.pageable_count/size);
+                $("#page").html(`<b>${page} / ${last}</b>`);
+
+               if(page==1){
+                    $("#prev").attr("disabled", true);
+                }else{
+                    $("#prev").attr("disabled", false);
+                }
+                if(data.meta.is_end){
+                    $("#next").attr("disabled", true);
+                }else{
+                    $("#next").attr("disabled", false);
+                } 
+            }
+        });
+    }
+</script>

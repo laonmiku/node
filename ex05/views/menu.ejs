@@ -1,0 +1,68 @@
+<nav class="navbar bg-warning navbar-expand-lg " data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/"">Home</a>
+            <button class=" navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/book">도서검색</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/local">지역검색</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/blog">블로그검색</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/posts">게시판</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item" id="login">
+                        <a class="nav-link active" aria-current="page" href="/users/login">로그인</a>
+                    </li>
+                    <li class="nav-item" id="uid" style="display: none;">
+                        <a class="nav-link active" aria-current="page" href="#" style="color: rgb(0, 0, 0);"></a>
+                    </li> <!--비워도나옴아이디,,-->
+                    <li class="nav-item" id="logout" style="display: none;">
+                        <a class="nav-link active" aria-current="page" href="">로그아웃</a>
+                    </li>
+                </ul>
+            </div>
+    </div>
+</nav>
+
+<!--로그인성공하고 작용됨-->
+<script>
+    const uid = sessionStorage.getItem('uid'); //uid값에 로그인한 uid를 가져옴
+    //alert(uid);
+    $("#uid").on("click","a",function(e){
+        e.preventDefault();
+        location.href="/users/mypage?uid="+ uid;
+    });
+    
+
+    if (uid) {
+        $("#login").hide();
+        $("#logout").show();
+        $("#uid").show();
+        $("#uid a").html(uid); //uid안에잇는 a태그
+    } else {
+        $("#login").show();
+        $("#logout").hide();
+        $("#uid").hide();
+    }
+
+    //로그아웃메뉴를 클릭한경우
+    $("#logout").on("click", "a", function (e) {
+        e.preventDefault();
+        if (confirm("로그아웃하실래영?")) { //컨펌이라 확인취소로 팝업이 뜰꺼임!!
+            sessionStorage.clear();
+            location.href = ("/");
+        }
+    });
+</script>
