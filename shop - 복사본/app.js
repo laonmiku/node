@@ -21,7 +21,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/books', require('./routes/books')); //d위에보면 리콰이어 따로잇느거 한번에한거임
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
