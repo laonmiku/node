@@ -21,7 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/books', require('./routes/books')); //d위에보면 리콰이어 따로잇느거 한번에한거임
+app.use('/books', require('./routes/books'));
+app.use('/review', require('./routes/review'));
+app.use('/cart', require('./routes/cart'));
+app.use('/orders', require('./routes/orders'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -39,6 +42,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
 db = require('./db');
 db.connect();
+
 module.exports = app;
