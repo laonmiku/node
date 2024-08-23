@@ -1,5 +1,6 @@
 
 <div></div>
+<h3 class="text-center my-3">캐치티니핑 극장판 💖사랑의 하츄핑💖</h3>
 <div id="div_cafe"></div>
 <div class="text-center my-3">
     <button class="btn" id="prev">이전</button>
@@ -9,15 +10,15 @@
 <script id="temp_cafe" type="x-handlebars-template">
    <table class="table table-striped table-hover">
         <tr>
-            <td>장소명</td>
-            <td>전화</td>
-            <td>주소</td>
+            <td>제목</td>
+            <td>내용</td>
+            <td>블로그</td>
         </tr>
         {{#each documents}}
             <tr>
-                <td>{{place_name}}</td>
-                <td>{{phone}}</td>
-                <td>{{address_name}}</td>
+                <td><a href="{{url}}">{{title}}</a></td>
+                <td>{{contents}}</td>
+                <td>{{blogname}}</td>
             </tr>
         {{/each}}
     </table>
@@ -43,7 +44,7 @@ let page=1;
             type:"get",
             url:"https://dapi.kakao.com/v2/search/blog",
             dataType:"json",
-            data:{query:"강서구 애견카페", size:5, page:page},
+            data:{query:"사랑의 하츄핑", size:5, page:page},
             headers:{"authorization":"KakaoAK f3d977d0f78639ca211ff67b0676d64c"},
             success:function(data){
                 console.log(data);
