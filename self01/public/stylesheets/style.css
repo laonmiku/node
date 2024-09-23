@@ -1,15 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 *{
-    font-family:"Single Day"; 
+    font-family: "Noto Sans KR", sans-serif;
 }
 .menuM{
   font-size: 35px;
 }
 h1{
-  background-color: rgb(186, 236, 255);
+  background-color:rgba(246, 192, 205, 0.986);
   text-align: center;
-
-
 }
 #home_h5{
 text-align: center;
@@ -18,4 +16,30 @@ background-color: bisque;
 #home_h6{
   text-align: right;
   color: gray;
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.Reference{
+  color: #4979ff; /* 링크 기본 색상 (파란색) */
+}
+
+/* 링크에 마우스를 올렸을 때 색상 */
+.Reference:hover {
+  color: #9fbdff; /* 마우스를 올렸을 때 색상 (주황색) */
+}
+
+/* 링크가 클릭된 후 색상 */
+.Reference:active {
+  color: #bd1ee9; /* 클릭된 후 색상 (분홍색) */
+}
+.menu_menubar{
+  border-bottom: 2px solid #e7e7e7;
+}
+.bg-mygray{
+  background-color: #e7e7e7;
 }

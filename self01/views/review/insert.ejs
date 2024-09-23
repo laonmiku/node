@@ -1,0 +1,79 @@
+<h1> 누구나 책 보는 방 : 책방</h1>
+
+<div class="border border-1 p-3">
+    <div id="div_book" class="mb-3 "></div>
+    <div class="card p-3" >
+        <form  name="frm"  method="post" action="/review/insert">
+            <input name="title" type="text"  class="form-control my-2" placeholder="제목을 입력해주세요.">
+            <textarea name="contents" class="form-control my-2" rows="6" placeholder="독자님의 감상을 적어주세요."></textarea>
+            <div class="text-center mt-3">
+                <button type="reset" class="btn btn-secondary px-5">취소</button>
+                <button type="submit" class="btn btn-primary px-5">등록</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script id="temp_book" type="text/x-handlebars-template">
+    <div class="card">
+        <div class="row p-2">
+            <div class="col col-4 col-md-4 col-lg-4 text-center">
+                <img src="{{image}}" alt="책 이미지" class="img-fluid">
+            </div>
+            <div class="col">
+                <div>제목: {{title}}</div>
+                <div>저자: {{authors}}</div>
+                <div>출판사: {{publisher}}</div>
+                <div>ISBN: {{isbn}}</div>
+                <div>가격: {{price}}</div>
+                <div>출판일: {{publishDate}}</div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script>
+     // 세션에서 저장된 값을 가져오기
+    const bookData = sessionStorage.getItem('book');
+    
+    if (bookData) {
+        const data = JSON.parse(bookData);
+        const tempData= document.getElementById('temp_book').innerHTML;
+        const template = Handlebars.compile(tempData);
+
+        document.getElementById('div_book').innerHTML = template(data);
+    } else {
+        document.getElementById('div_book').innerHTML = '<p> - </p>';
+    }
+
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+
+        const uid = sessionStorage.getItem('uid');
+        const bid = sessionStorage.getItem('bid');
+        const title=$(frm.title).val();
+        const contents=$(frm.contents).val();
+
+        if (title === "") {
+            alert("제목을 입력하세요!");
+        } else if (contents === "") {
+            alert("내용을 입력하세요!");
+        } else {
+            // AJAX로 폼 데이터 전송
+            $.ajax({
+                type: 'POST',
+                url: '/review/insert',
+                contentType: 'application/json',
+                data: JSON.stringify({ title, contents, uid, bid }),
+                success: function(response) {
+                    alert(' 성공적으로 작성되었습니다.');
+                    window.location.href = '/book'; // 페이지 리다이렉트
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX 요청 오류:', status, error);
+                    alert('독후감 작성 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    });
+</script>

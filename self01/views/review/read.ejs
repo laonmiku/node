@@ -1,0 +1,93 @@
+<h1><%=title%></h1>
+<div id="readSection" >
+    <div class="text-end my-1">
+        <button class="btn btn-sm btn-primary ms-2" id="delete">삭제</button>
+        <button class="btn btn-sm btn-outline-primary" id="update">수정</button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div><b>[<%=review.rid%>] <%=review.title%></b></div>
+            <hr>
+            <div><%=review.contents%></div>
+        </div>
+        <div class="card-footer" style="font-size:12px; color:gray;">
+            <div class="row">
+                <div class="col">
+                    
+                </div>
+                <div class="col text-end">
+                    <span class="me-3">작성자: <%=review.uid%></span>
+                    작성일: <%=review.fmtDate%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Section -->
+<div id="editSection" style="display:none;">
+    <h3 class="text-center my-3">~수정중입니다~</h3>
+    <div class="card p-3">
+        <form id="updateForm">
+            <input type="hidden" name="rid" value="<%= review.rid %>">
+            <div class="mb-3">
+                <input type="text" class="form-control  my-2" id="editTitle" name="title" value="<%= review.title %>">
+                <textarea class="form-control  my-2" id="editContents" name="contents" rows="3"><%= review.contents %></textarea>
+            </div>
+            <div class="text-end">
+                <button type="button" class="btn btn-sm btn-primary ms-2" id="cancel">취소</button>
+                <button type="submit" class="btn btn-sm btn-outline-primary">저장</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+<script>
+    /*함수등록*/
+    function getById(id) {
+    return document.getElementById(id);
+    }   
+    // 'update' 클릭 시 호출되는 이벤트 핸들러
+    getById('update').addEventListener('click', function () {
+        getById('editSection').style.display = 'block';
+        getById('readSection').style.opacity = '0.5';
+    });
+
+    // 'cancel' 클릭 시 호출되는 이벤트 핸들러
+    getById('cancel').addEventListener('click', function () {
+        getById('editSection').style.display = 'none';
+        getById('readSection').style.opacity = '1';
+    });
+
+    // 'updateForm' 제출 시 호출되는 이벤트 핸들러
+    getById('updateForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = {
+            rid: formData.get('rid'),
+            title: formData.get('title'),
+            contents: formData.get('contents')
+        };
+
+        fetch('/review/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('수정 성공!');
+                location.reload(); // 페이지 새로 고침
+            } else {
+                alert('수정 실패!');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('서버 오류');
+        });
+    });
+</script>

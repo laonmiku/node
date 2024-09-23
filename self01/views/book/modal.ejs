@@ -1,25 +1,45 @@
-
-  <!-- Modal -->
-  <div class="modal fade" id="modal{{@index}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="modal{{@index}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">{{title}}</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">{{title}}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-4 d-flex align-items-center justify-content-center">
+                        <img src={{check thumbnail}} width="200rem" />
+                    </div>
+                    <form name="modal_frm"  method="post" action="/book/insert">
+                        <input name="uid" type="hidden">
+                        <div class="col-8 pt-5">
+                            <div>제목 : <a href={{url}}>{{title}}</a></div>
+                            <div>가격 : {{fmtPrice sale_price}}</div>
+                            <div>저자 : {{authors}}</div>
+                            <div>출판사 : {{publisher}}</div>
+                            <div>ISBN : {{isbn}}</div>
+                            <div>출판일 : {{fmtDate datetime}}</div>
+                            <hr />
+                            <p>{{contents}}</p>
+                        </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-success  w-100">후기쓰러가기</button>
+            </div>
+        </form>
         </div>
-        <div class="modal-body">
-            <div>제목 : {{title}}</div>
-            <div>가격 : {{sale_price}}</div>
-            <div>저자 : {{authors}}</div>
-            <div>출판사 : {{publisher}}</div>
-            <div>ISBN : {{isbn}}</div>
-            <div>출판일 : {{datetime}}</div>
-            <hr>
-            <p>{{contents}}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+<script>
+    $(modal_frm).on("submit", function(e){
+    e.preventDefault();
+    
+            alert(`${uid}\n${title}\n${contents}`);
+            frm.submit();
+            location.href = "/";
+    })
+      
+</script>

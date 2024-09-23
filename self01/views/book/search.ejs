@@ -1,108 +1,211 @@
-<h1><%=title%></h1>
-<!--실질적으로나오게함-->
+<!-- 도서찾는 프론트페이지 -->
+<h1>
+    <%=title%>
+</h1>
+<!-- 실질적으로 나오는 부분 -->
 <div class="row mb-2">
     <div class="col-6 col-md-4">
-        <form class="input-group" name="frm">
-            <input class="form-control" name="query" value="티니핑" placeholder="검색어">
-            <button class="btn btn-success">검색</button>
+        <form class="input-group" id="searchForm">
+            <input class="form-control" name="query" value="사과" placeholder="검색어">
+            <button class="btn btn-success" type="submit">검색</button>
         </form>
     </div>
 </div>
 <div id="div_book" class="row"></div>
 <div class="text-center my-3">
-    <button class="btn btn-success" id="prev">이전</button>
+    <button class="btn btn-outline-light" style="background-color:rgba(246, 192, 205, 0.986);color: black;" id="prev">이전</button>
     <span class="mx-3" id="page">1</span>
-    <button class="btn btn-success" id="next">다음</button>
+    <button class="btn btn-outline-light" style="background-color:rgba(246, 192, 205, 0.986);color: black;" id="next">다음</button>
 </div>
 
-<!--도서템플릿-->
-<script id="temp_book" type="x-handlebars-template">
+<!-- 도서템플릿 -->
+<script id="temp_book" type="text/x-handlebars-template">
 {{#each documents}}
     <div class="col-lg-2 col-md-4 col-6 mb-2">
         <div class="card">
             <div class="card-body">
-                <img src={{check thumbnail}} width="90%" id={{@index}} style="cursor:pointer;">
+                <img src="{{check thumbnail}}" width="90%" data-id="{{@index}}" style="cursor:pointer;">
             </div>
             <div class="card-footer">
-                <div class="ellipsis title">{{title}}</div>
-                <%-include('modal.ejs')%>
+                <div class="ellipsis title">{{ title }}</div>
+                <div class="modal fade" id="modal{{@index}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+                    data-title="{{title}}"
+                    data-isbn="{{isbn}}"
+                    data-price="{{fmtPrice sale_price}}"
+                    data-contents="{{contents}}"
+                    data-publisher="{{publisher}}"
+                    data-authors="{{authors}}"
+                    data-thumbnail="{{check thumbnail}}"
+                    data-datetime="{{fmtDate datetime}}">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">{{title}}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-4 d-flex align-items-center justify-content-center">
+                                        <img src="{{check thumbnail}}" width="200rem" />
+                                    </div>
+                                    <form id="modal_frm{{@index}}">
+                                        <input name="uid" type="hidden" value="{{@index}}">
+                                        <div class="col-8 pt-5">
+                                            <div>제목 : <a href="{{url}}">{{title}}</a></div>
+                                            <div>가격 : {{fmtPrice sale_price}}</div>
+                                            <div>저자 : {{authors}}</div>
+                                            <div>출판사 : {{publisher}}</div>
+                                            <div>ISBN : {{isbn}}</div>
+                                            <div>출판일 : {{fmtDate datetime}}</div>
+                                            <hr />
+                                            <p>{{contents}}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-outline-success w-100">저장하기</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>        
-    </div> 
+        </div>
+    </div>
 {{/each}}
+</script>
+
 </script>
 <!--이미지유무체크 함수-->
 <script>
-    
-     Handlebars.registerHelper("check", function(thumbnail){
-        if(thumbnail){
+    Handlebars.registerHelper("check", function (thumbnail) {
+        if (thumbnail) {
             return thumbnail;
-        }else{
+        } else {
             return "http://via.placeholder.com/150x170";
         }
     });
+    Handlebars.registerHelper('fmtPrice', function (price) {
+        if (price === undefined || price === null) {
+            return '가격 정보 없음';
+        }
+        return price.toLocaleString() + '원'; // 가격 포맷
+    });
+    Handlebars.registerHelper('fmtDate', function (datetime) {
+        if (!datetime) {
+            return '날짜 정보 없음';
+        }
+        // `T` 문자 기준으로 날짜와 시간을 분리
+        const fmtDate = datetime.split('T');
+        return fmtDate[0]; // 날짜 부분만 반환
+    });
+
 </script>
 
 <!--도서찾는시스템 함수로만들고 호출하기-->
 <script>
-   
-   let query =$(frm.query).val();
-   let page=1;
-   getData();
+// 페이지 로드 시 초기 데이터 가져오기
+let query = $('#searchForm [name=query]').val();
+let page = 1;
+getData();
 
-   //이미지를 클릭한 경우
-   $("#div_book").on("click", "img",function(){
-        const id=$(this).attr("id");
-        $("#modal" + id).modal("show");
-   });
-   //다음,이전버튼 클릭한경우
-   $("#next").on("click",function(){
-        page++;
+// 이미지 클릭 시 모달 열기
+$("#div_book").on("click", "img", function () {
+    const id = $(this).data("id");
+    $("#modal" + id).modal("show");
+});
+
+// 다음 페이지 버튼 클릭 시
+$("#next").on("click", function () {
+    page++;
+    getData();
+});
+
+// 이전 페이지 버튼 클릭 시
+$("#prev").on("click", function () {
+    page--;
+    getData();
+});
+
+// 검색 폼 제출 시
+$('#searchForm').on("submit", function (e) {
+    e.preventDefault();
+    query = $(this).find('[name=query]').val();
+    if (query === "") {
+        alert("검색어를 입력하세요");
+    } else {
+        page = 1;
         getData();
-   });
-   $("#prev").on("click",function(){
-        page--;
-        getData();
-   });
-
-    $(frm).on("submit", function(e){
-        e.preventDefault();
-        query =$(frm.query).val();
-        if(query==""){
-            alert("검색어를 입력하세요")
-        }else{
-            page=1;
-            getData();
-        }
-    }); 
-    
-    function getData(){ //데이터가져오는함수
-        $.ajax({
-            type:"get",
-            url:"https://dapi.kakao.com/v3/search/book",
-            dataType:"json",
-            data:{query:query, size:6, page:page},
-            headers:{"authorization":"KakaoAK f3d977d0f78639ca211ff67b0676d64c"},
-            success: function(data){
-                //alert("성공!");
-                console.log(data);
-                const temp=Handlebars.compile($("#temp_book").html());
-                $("#div_book").html(temp(data));
-                const last=Math.ceil(data.meta.pageable_count/6);
-                $("#page").html(`<b>${page}/${last}</b>`);
-                if(page==1){
-                        $("#prev").attr("disabled",true);
-                }else{
-                        $("#prev").attr("disabled",false);
-                }
-
-                if(data.meta.is_end){
-                        $("#next").attr("disabled",true);
-                }else{
-                        $("#next").attr("disabled",false);
-                }
-            }
-        });
     }
+});
+
+// 도서 데이터 가져오는 함수
+function getData() {
+    $.ajax({
+        type: "get",
+        url: "https://dapi.kakao.com/v3/search/book",
+        dataType: "json",
+        data: { query: query, size: 18, page: page },
+        headers: { "Authorization": "KakaoAK f3d977d0f78639ca211ff67b0676d64c" },
+        success: function (data) {
+            const template = Handlebars.compile($("#temp_book").html());
+            $("#div_book").html(template(data));
+            const last = Math.ceil(data.meta.pageable_count / 6);
+            $("#page").html(`<b>${page}/${last}</b>`);
+            $("#prev").attr("disabled", page === 1);
+            $("#next").attr("disabled", data.meta.is_end);
+        }
+    });
+}
+
+// 모달의 데이터를 추출
+$('#div_book').on('submit', 'form', function(e) {
+    e.preventDefault(); // 폼 제출 기본 동작 방지
+
+    const form = $(this);
+    const modal = form.closest('.modal');
     
+    const title = modal.data("title");
+    const isbn = modal.data("isbn");
+    const price = modal.data("price");
+    const contents = modal.data("contents");
+    const publisher = modal.data("publisher");
+    const authors = modal.data("authors");
+    const image = modal.data("thumbnail"); //썸네일! 
+    const publishDate = modal.data("datetime");
+    
+    // 폼 데이터 준비
+    const formData = {
+        title, 
+        price, 
+        contents, 
+        isbn, 
+        publisher, 
+        authors, 
+        image, 
+        publishDate
+    };
+    console.log(formData); // 콘솔에 formData 출력
+
+    $.ajax({
+        type: 'POST',
+        url: '/book/insert', // 서버에서 데이터를 처리할 엔드포인트 URL
+        data: formData,
+        success: function(response) {
+            // 성공적으로 저장된 경우
+            alert('저장 성공!');
+            // 세션에 정보임시저장
+            const lastID = response.lastID;
+            sessionStorage.setItem("book", JSON.stringify(formData));
+            sessionStorage.setItem("bid",lastID);
+            console.log("세션북"+JSON.parse(sessionStorage.getItem("book"),sessionStorage.getItem("bid")));
+            location.href="/review/insert";
+        }
+    });
+
+});
+
+
+
+
 </script>

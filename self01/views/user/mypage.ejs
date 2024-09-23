@@ -1,0 +1,39 @@
+
+<h1><%=title%></h1>
+<div class="row justify-content-center">
+    <div class="col-10 col-md-6 card">
+        <form class="card-body" name="frm" method="post" action="/user/update">
+            <input name="uid"  type="hidden" >
+            <div class="input-group mb-2">
+                <span class="input-group-text">이름(닉네임)</span>
+                <input name="uname" class="form-control"value="<%=user.uname%>"  >
+            </div>
+            <div class="input-group mb-2">
+                <span class="input-group-text">전화</span>
+                <input name="phone" class="form-control"value="<%=user.phone%>" >
+            </div>
+            <div class="input-group mb-2">
+                <span class="input-group-text">유형</span>
+                <select  class="form-control" name="age">
+                    <option value="1">초등부</option>
+                    <option value="2">중·고등부</option>
+                    <option value="0">일반회원</option>
+                </select>
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary">수정</button>
+                <button type="reset" class="btn btn-secondary">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        if(confirm("정말로 수정하실래요?")){
+            frm.submit();
+        }
+    });
+    console.log(user);
+
+</script>
